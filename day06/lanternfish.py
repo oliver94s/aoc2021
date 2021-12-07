@@ -40,5 +40,5 @@ if __name__ == "__main__":
     args = ap.parse_args()
 
     fish = parse_data(args.input_file)
-    population = calc_population(fish, 80)
+    population = calc_population(fish, 256)
     print(population)
