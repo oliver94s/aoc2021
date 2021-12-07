@@ -14,12 +14,19 @@ def calc(crab_subs, pos):
     
     return total
 
+cached_sums = {}
+
 def calc2(crab_subs, pos, best):
     total = 0
     for sub in crab_subs:
         delta = abs(sub - pos)
-        for x in range(delta + 1):
-            total += x
+        subtotal = cached_sums.get(delta, 0)
+        if not subtotal:
+            for x in range(delta + 1):
+                subtotal += x
+            cached_sums[delta] = subtotal
+        total += subtotal
+        
         if best is not None and total > best:
             return total
     
