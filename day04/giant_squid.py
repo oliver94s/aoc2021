@@ -1,5 +1,5 @@
 import argparse
-
+import copy
 
 class Board(object):
     def __init__(self, rows):
@@ -95,12 +95,22 @@ def parse_data(input_file):
 
 
 def find_winner(nums, boards):
+    # referring to the index of the board
+    winners = [0] * len(boards)
+
     for num in nums:
-        for board in boards:
+        for idx in range(len(boards)):
+            if winners[idx]:
+                continue
+            board = boards[idx]
             board.add_number(num)
             if board.is_winner():
-                print(num * sum(board.get_unselected()))
-                return board
+                print(sum(winners))
+                winners[idx] = 1
+                if sum(winners) == len(boards):
+                    print(num * sum(board.get_unselected()))    
+                    return board
+                
 
 
 if __name__ == "__main__":
