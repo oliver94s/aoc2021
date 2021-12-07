@@ -22,8 +22,9 @@ class VentMap(object):
         delta_x = dest[0] - src[0]
         delta_y = dest[1] - src[1]
 
-        if abs(delta_y) and abs(delta_x):
+        if abs(delta_y) and abs(delta_x) and not abs(delta_y) == abs(delta_x):
             return
+        
         self.vent_count += 1
 
         x_step = 1 if delta_x > 0 else -1
@@ -32,11 +33,16 @@ class VentMap(object):
         start_x = src[0]
         start_y = src[1]
         
-        if abs(delta_x) > 0:
+        if abs(delta_y) == abs(delta_x):
+            for x in range(0, abs(delta_x + x_step), abs(x_step)):
+                x_pos = start_x + (x_step * x)
+                y_pos = start_y + (y_step * x)
+                self.map[y_pos][x_pos] += 1
+        elif abs(delta_x) > 0:
             for x in range(0, delta_x + x_step, x_step):
                 # print("x: %s" % x)
                 self.map[start_y][start_x + x] += 1
-        else:
+        elif abs(delta_y) > 0:
             for y in range(0, delta_y + y_step, y_step):
                 # print("y: %s" % y)
                 self.map[start_y + y][start_x] += 1
@@ -52,7 +58,7 @@ class VentMap(object):
             for col in row:
                 if col > 1:
                     count += 1
-        print(count)        
+        print("overlaps: %s" % count)        
         return count
 
 def parse_data(input_file):
@@ -87,7 +93,7 @@ def parse_data(input_file):
     for vent in vents:
         vent_map.calc_line(vent[0], vent[1])
 
-    # vent_map.print_map()
+    vent_map.print_map()
 
     print("vent count: %s" % vent_map.vent_count)
     vent_map.calc_overlaps()
