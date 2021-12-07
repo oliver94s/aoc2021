@@ -7,6 +7,11 @@ class Board(object):
         self.numbers = self.parse_rows(self.rows)
         self.selected = []
 
+        self.bingo = len(self.rows)
+
+        self.row = [0] * self.bingo
+        self.col = [0] * self.bingo
+
     @staticmethod
     def parse_rows(rows):
         numbers = {}
@@ -24,7 +29,12 @@ class Board(object):
         a number is called
         """
         if number in self.numbers.keys():
-            print('do i enter here?')
+            # r_num = self.numbers[number]['row']
+            # c_num = self.numbers[number]['col']
+
+            # self.row[r_num] += 1
+            # self.col[c_num] += 1
+
             self.selected.append(number)
 
     def is_winner(self):
@@ -38,7 +48,7 @@ class Board(object):
         # we just have to worry when one of the 
         # dimensions is filled
         bingo = len(self.rows)
-        print("bingo is %s" % bingo)
+        
         row = [0] * bingo
         col = [0] * bingo
         for num in self.selected:
@@ -52,6 +62,11 @@ class Board(object):
                 return True
         
         return False
+
+    def get_unselected(self):
+        unselected = set(self.selected).symmetric_difference(list(self.numbers.keys()))
+
+        return unselected
 
 def parse_data(input_file):
     with open(input_file, 'r') as f:
@@ -74,7 +89,8 @@ def parse_data(input_file):
                 if col:
                     row.append(int(col))
             board.append(row)
-    
+    boards.append(Board(board))
+
     return rand_nums, boards
 
 
@@ -83,7 +99,7 @@ def find_winner(nums, boards):
         for board in boards:
             board.add_number(num)
             if board.is_winner():
-                print(num)
+                print(num * sum(board.get_unselected()))
                 return board
 
 
