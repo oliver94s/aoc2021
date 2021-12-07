@@ -1,11 +1,16 @@
 import argparse
-
+import copy
 
 class Board(object):
     def __init__(self, rows):
         self.rows = rows
         self.numbers = self.parse_rows(self.rows)
         self.selected = []
+
+        self.bingo = len(self.rows)
+
+        self.row = [0] * self.bingo
+        self.col = [0] * self.bingo
 
     @staticmethod
     def parse_rows(rows):
@@ -24,7 +29,12 @@ class Board(object):
         a number is called
         """
         if number in self.numbers.keys():
-            print('do i enter here?')
+            # r_num = self.numbers[number]['row']
+            # c_num = self.numbers[number]['col']
+
+            # self.row[r_num] += 1
+            # self.col[c_num] += 1
+
             self.selected.append(number)
 
     def is_winner(self):
@@ -38,7 +48,7 @@ class Board(object):
         # we just have to worry when one of the 
         # dimensions is filled
         bingo = len(self.rows)
-        print("bingo is %s" % bingo)
+        
         row = [0] * bingo
         col = [0] * bingo
         for num in self.selected:
@@ -52,6 +62,11 @@ class Board(object):
                 return True
         
         return False
+
+    def get_unselected(self):
+        unselected = set(self.selected).symmetric_difference(list(self.numbers.keys()))
+
+        return unselected
 
 def parse_data(input_file):
     with open(input_file, 'r') as f:
@@ -74,17 +89,28 @@ def parse_data(input_file):
                 if col:
                     row.append(int(col))
             board.append(row)
-    
+    boards.append(Board(board))
+
     return rand_nums, boards
 
 
 def find_winner(nums, boards):
+    # referring to the index of the board
+    winners = [0] * len(boards)
+
     for num in nums:
-        for board in boards:
+        for idx in range(len(boards)):
+            if winners[idx]:
+                continue
+            board = boards[idx]
             board.add_number(num)
             if board.is_winner():
-                print(num)
-                return board
+                print(sum(winners))
+                winners[idx] = 1
+                if sum(winners) == len(boards):
+                    print(num * sum(board.get_unselected()))    
+                    return board
+                
 
 
 if __name__ == "__main__":
