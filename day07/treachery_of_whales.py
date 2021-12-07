@@ -14,16 +14,26 @@ def calc(crab_subs, pos):
     
     return total
 
+def calc2(crab_subs, pos, best):
+    total = 0
+    for sub in crab_subs:
+        delta = abs(sub - pos)
+        for x in range(delta + 1):
+            total += x
+        if best is not None and total > best:
+            return total
+    
+    return total
+
 def calc_most_efficient(crab_subs):
     most_efficient = None 
     best_pos = None
     for pos in range(min(crab_subs), max(crab_subs)):
-        gas_usage = calc(crab_subs, pos)
+        gas_usage = calc2(crab_subs, pos, most_efficient)
         if most_efficient is None or most_efficient > gas_usage:
             most_efficient = gas_usage
             best_pos = pos
 
-    print(most_efficient)
     return most_efficient, best_pos
 
 if __name__ == "__main__":
